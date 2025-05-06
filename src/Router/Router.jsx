@@ -6,11 +6,14 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import AuthLayout from "../Layouts/AuthLayout";
 import NewsDetails from "../pages/NewsDetails";
+import PrivateRoute from "../Provider/PrivateRoute";
+import Loading from "../pages/Loading";
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <HomeLayout></HomeLayout>,
+        hydrateFallbackElement: <Loading></Loading>,
         children: [
             {
                 path: '/',
@@ -19,7 +22,6 @@ const router = createBrowserRouter([
             {
                 path: '/category/:id',
                 element: <CategoryNews></CategoryNews>,
-                hydrateFallbackElement: <span className="loading loading-infinity loading-xl"></span>,
                 loader: () => fetch('/news.json'),
             }
         ]
@@ -27,6 +29,7 @@ const router = createBrowserRouter([
     {
         path: '/auth',
         element: <AuthLayout></AuthLayout>,
+        hydrateFallbackElement: <Loading></Loading>,
         children: [
             {
                 path: '/auth/login',
@@ -40,9 +43,10 @@ const router = createBrowserRouter([
     },
     {
         path: '/news-details/:id',
-        element: <NewsDetails></NewsDetails>,
-        loader: ()=> fetch('/news.json'),
-        hydrateFallbackElement: <span className="loading loading-infinity loading-xl"></span>,
+        element: <PrivateRoute>
+            <NewsDetails></NewsDetails>
+        </PrivateRoute>,
+        loader: () => fetch('/news.json'),
     },
     {
         path: '/*',

@@ -1,15 +1,21 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router';
 import { AuthContext } from '../Provider/AuthProvider';
 import { toast, Toaster } from 'sonner';
 
 const Register = () => {
-    const {createUser} = useContext(AuthContext)
+    const {createUser, updateUser} = useContext(AuthContext)
+    const [nameErr, setNameErr] = useState('')
+    const navigate = useNavigate()
 
     const handleRegister = (e) => {
+
         e.preventDefault();
         const form = e.target;
         const name = form.name.value;
+        if(name.length < 5){
+            setNameErr('Name should be more than 5 characters')
+        }
         const photo = form.photoURL.value;
         const email = form.email.value;
         const password = form.password.value;
@@ -18,9 +24,16 @@ const Register = () => {
         createUser(email, password)
         .then(() => {
             toast.success('Registered Successfully.')
+            updateUser({displayName: name, photoURL: photo })
+            .then(()=> {
+                navigate('/')
+            })
+            .catch(err => {
+                // console.log(err);
+            })
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
         })
     }
     return (
@@ -31,13 +44,14 @@ const Register = () => {
                 <div className='border-b-2 border-gray-100 my-6'></div>
                 <form onSubmit={handleRegister} className="fieldset">
                     <label className="label text-primary font-semibold">Your Name</label>
-                    <input type="text" name='name' required className="input bg-base-200 mb-3" placeholder="Your Name" />
+                    <input type="text" name='name' required className="w-full input bg-base-200 mb-3" placeholder="Your Name" />
+                    {nameErr && <p className='text-xs text-error'>{nameErr}</p>}
                     <label className="label text-primary font-semibold">Photo URL</label>
-                    <input type="text" name='photoURL' required className="input bg-base-200  mb-3" placeholder="Photo URL" />
+                    <input type="text" name='photoURL' required className="w-full input bg-base-200  mb-3" placeholder="Photo URL" />
                     <label className="label text-primary font-semibold">Email</label>
-                    <input type="email" name='email' required className="input bg-base-200 mb-3" placeholder="Email" />
+                    <input type="email" name='email' required className="w-full input bg-base-200 mb-3" placeholder="Email" />
                     <label className="label text-primary font-semibold">Password</label>
-                    <input type="password" name='password' required className="input bg-base-200 mb-3" placeholder="Password" />
+                    <input type="password" name='password' required className="w-full input bg-base-200 mb-3" placeholder="Password" />
                     <div><a className="link link-hover">Forgot password?</a></div>
                     <button type='submit' className="btn btn-neutral mt-4">Register</button>
                 </form>

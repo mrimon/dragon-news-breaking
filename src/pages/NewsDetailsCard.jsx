@@ -3,7 +3,6 @@ import { FaArrowLeftLong } from 'react-icons/fa6';
 import { Link } from 'react-router';
 
 const NewsDetailsCard = ({news}) => {
-    console.log(news);
     return (
         <div className=' shadow-md rounded-sm p-8'>
             <img className='w-full object-cover' src={news.image_url} alt="" />
